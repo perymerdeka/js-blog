@@ -1,4 +1,8 @@
-export const posts = [
+const DataManager = (() => {
+  const STORAGE_KEY = 'posts';
+
+  // Load posts from localStorage if available
+  let posts = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     {
       id: 1,
       title: "Article Title 1",
@@ -18,3 +22,41 @@ export const posts = [
       link: `detail.html?id=2`,
     }
   ];
+
+  const savePosts = () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+  };
+
+  const getPosts = () => posts;
+
+  const addPost = (post) => {
+    posts.push(post);
+    savePosts();
+    console.log('Post added:', post);
+  };
+
+  const updatePost = (updatedPost) => {
+    const index = posts.findIndex(post => post.id === updatedPost.id);
+    if (index !== -1) {
+      posts[index] = updatedPost;
+      savePosts();
+      console.log('Post updated:', updatedPost);
+    }
+  };
+
+  const deletePost = (postId) => {
+    posts = posts.filter(post => post.id !== postId);
+    savePosts();
+    console.log('Post deleted:', postId);
+  };
+
+  return {
+    getPosts,
+    addPost,
+    updatePost,
+    deletePost
+  };
+})();
+
+export default DataManager;
+
